@@ -1,0 +1,384 @@
+openapi: 3.0.0
+
+info:
+  description: |
+    API specification of the parloa chat api.
+
+    <h2 id="description-summary">Summary</h2>
+
+    Parloa's chat api enable integrators to interact with a parloa textchat bot in there chat-system or application.
+
+    The api follows a simple request-response pattern, the api consits only of one endpoint that
+    expects TextchatV2 events via TextchatV2Request and responds with a TextchatV2Response.
+
+    <h2 id="description-lifecyle">Conversation Protocol</h2>
+
+    An interaction with with a textchat bot have to follow the following protocol:
+
+      1. The first interaction have to initiate a conversation via an `TextchatV2LaunchEvent`,
+         the bot will then directly respond with an welcome message.
+      2. Until the bot don't respond with `endConversation=true` the conversation will be kept
+         open, the conversation can be also terminated from the client side by sending a `TextchatV2QuitEvent`.
+      3. Over the lifetime of the conversation `TextchatV2MessageEvent` are used to notify responses from
+         a user to a bot.
+
+    <h2 id="description-authentication">Authentication</h2>
+
+    To authenticate against textchat bot, the dialoghook webhook have to be invoked with a Bearer token
+    that contains the apiToken that was created during the textchat bot's release creation.
+
+    [Bearer Authentication](https://swagger.io/docs/specification/authentication/bearer-authentication/):
+
+    ```
+    Authorization: Bearer <apiToken>
+    ```
+
+  version: 0.0.1
+  title: Parloa Chat API
+  contact:
+    email: dev@parloa.com
+
+tags:
+  - name: Chat
+    description: Chat api
+
+servers:
+  - url: http://localhost
+    description: The development system (Docker)
+  - url: http://localhost:8081
+    description: The development system (No-Docker)
+  - url: https://app.parloa.com
+    description: The production system
+  - url: https://stage.parloa.com
+    description: The staging system
+
+paths:
+  /dialoghook:
+    post:
+      operationId: send-chat-event
+      summary: "Send chat events to a textchat release and receive chat responses"
+      description: |
+        This endpoint expects to receive chat api events from a chat-adapter and responds with a chat response.
+
+      tags:
+        - "Chat"
+      parameters:
+        - name: dialog
+          description: |
+            The releaseId of Textchat 2 release which should receive the provided TextchatV2Request.
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: platform
+          description: |
+            Must be "textchatV2".
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - textchatV2
+
+      requestBody:
+        description: |
+          Have to be a textchatV2 event.
+        required: true
+        content:
+          application/json:
+            examples:
+              launchRequest:
+                summary: Starts a new conversation with textchat bot.
+                value:
+                  apiVersion: "chat/v1"
+                  requesterId: "<user-id>"
+                  sessionId: "<session-id>"
+                  event:
+                    type: "launch"
+              messageRequest:
+                summary: Send a message to textchat bot.
+                value:
+                  apiVersion: "chat/v1"
+                  requesterId: "<user-id>"
+                  sessionId: "<session-id>"
+                  event:
+                    type: "message"
+                    text: "Hello textchat!"
+              quitRequest:
+                summary: Notifies to textchat bot that user quit the conversation.
+                value:
+                  apiVersion: "chat/v1"
+                  requesterId: "<user-id>"
+                  sessionId: "<session-id>"
+                  event:
+                    type: "quit"
+
+            schema:
+              $ref: "#/components/schemas/TextchatV2RequestBody"
+
+      responses:
+        default:
+          description: Contains the response from TextchatV2 release
+          content:
+            application/json:
+              examples:
+                text-response:
+                  summary: Textchat bot respond with a text message and the bot expects a response from the user
+                  value:
+                    apiVersion: "chat/v1"
+                    requesterId: "user-id"
+                    sessionId: "session-id"
+                    releaseId: "release-id"
+                    conversationId: "Unique identifier of the current on-going conversation"
+                    transactionId: "Unique identifier for the current textchat bot interaction"
+                    endConversation: false
+                    responseElements:
+                      - id: 0822093c-f18d-11ec-8ea0-0242ac120002
+                        type: text
+                        content: Greetings from the textchat bot.
+                      - id: 3822093c-f1dd-11ec-8ea0-0242dc120002
+                        type: text
+                        content: How can I help you?.
+
+                bot-quits-conversation:
+                  summary: Textchat bot gives a farewell and terminates the conversation.
+                  value:
+                    apiVersion: "chat/v1"
+                    requesterId: "user-id"
+                    sessionId: "session-id"
+                    releaseId: "release-id"
+                    conversationId: "Unique identifier of the current on-going conversation"
+                    transactionId: "Unique identifier for the current textchat bot interaction"
+                    endConversation: true
+                    responseElements:
+                      - id: 0822093c-f18d-11ec-8ea0-0242ac120002
+                        type: text
+                        content: Bye! See you later :)
+
+                bot-respond-with-json-payload:
+                  summary: Textchat bot responds with json payload that was provided by bot designer.
+                  value:
+                    apiVersion: "chat/v1"
+                    requesterId: "user-id"
+                    sessionId: "session-id"
+                    releaseId: "release-id"
+                    conversationId: "Unique identifier of the current on-going conversation"
+                    transactionId: "Unique identifier for the current textchat bot interaction"
+                    endConversation: false
+                    responseElements:
+                      - id: 0822093c-f18d-11ec-8ea0-0242ac120002
+                        type: payload
+                        content:
+                          suggestionChips:
+                            - yes
+                            - no
+                            - not sure?
+
+              schema:
+                $ref: "#/components/schemas/TextchatV2ResponseBody"
+
+components:
+  schemas:
+    TextchatV2Event:
+      oneOf:
+        - $ref: "#/components/schemas/TextchatV2LaunchEvent"
+        - $ref: "#/components/schemas/TextchatV2MessageEvent"
+        - $ref: "#/components/schemas/TextchatV2QuitEvent"
+    TextchatV2LaunchEvent:
+      additionalProperties: false
+      description: Notifies that a user requested to start a new chat interaction
+      properties:
+        type:
+          type: string
+          enum:
+            - launch
+      required:
+        - type
+      type: object
+    TextchatV2MessageEvent:
+      additionalProperties: false
+      description: Notifies that a user sends us a new message.
+      properties:
+        text:
+          description: The content of the text message
+          type: string
+        type:
+          type: string
+          enum:
+            - message
+      required:
+        - type
+        - text
+      type: object
+    TextchatV2QuitEvent:
+      additionalProperties: false
+      description: Notifies that a leaved the conversation
+      properties:
+        type:
+          type: string
+          enum:
+            - quit
+      required:
+        - type
+      type: object
+    TextchatV2RequestBody:
+      additionalProperties: false
+      properties:
+        apiVersion:
+          description: The interface version of text chat api
+          type: string
+          enum:
+            - chat/v1
+        event:
+          $ref: "#/components/schemas/TextchatV2Event"
+          description: The event that was be reported by this request.
+        requesterId:
+          description: This identifier is used by parloa to identify an user. You should pass in here an identifier for the current user e.g. user-id.
+          type: string
+        sessionId:
+          description: The sessionId should match to the conversationId of the chat interaction of the chat widget. Parloa will use this session Id to remember the conversation state between a user and a parloa bot.
+          type: string
+      required:
+        - apiVersion
+        - sessionId
+        - requesterId
+        - event
+      type: object
+
+    TextchatV2GenericCardResponseElement:
+      additionalProperties: false
+      properties:
+        content:
+          description: The content of the card is required unless a image is present.
+          type: string
+        id:
+          type: string
+        image:
+          additionalProperties: false
+          description: Images could be jpeg or png.
+          properties:
+            accessibilityText:
+              type: string
+            large:
+              additionalProperties: false
+              properties:
+                height:
+                  type: string
+                url:
+                  type: string
+                width:
+                  type: string
+              required:
+                - url
+              type: object
+            small:
+              additionalProperties: false
+              properties:
+                height:
+                  type: string
+                url:
+                  type: string
+                width:
+                  type: string
+              required:
+                - url
+              type: object
+          required:
+            - large
+            - small
+          type: object
+        subtitle:
+          description: The optional subtitle
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+          enum:
+            - cross_card
+      required:
+        - type
+      type: object
+    TextchatV2JSONPayloadResponseElement:
+      additionalProperties: false
+      properties:
+        content:
+          additionalProperties: {}
+          type: object
+        type:
+          type: string
+          enum:
+            - payload
+      required:
+        - type
+        - content
+      type: object
+    TextchatV2ResponseBody:
+      additionalProperties: false
+      properties:
+        apiVersion:
+          type: string
+          enum:
+            - chat/v1
+        conversationId:
+          description: The id is for the current conversation, can be used to lookup the analytics data via the analytics rest api.
+          type: string
+        endConversation:
+          description: Specifies if the conversation should end after this response
+          type: boolean
+        releaseId:
+          description: Id of the bot release that produces this response
+          type: string
+        requesterId:
+          description: This identifier is the same that was passed via the TextchatV2Request#requesterId it identifies an use that take part in a conversation.
+          type: string
+        responseElements:
+          description: Contains the response elements that were produced by the bot.
+          items:
+            $ref: "#/components/schemas/TextchatV2ResponseItem"
+          type: array
+        sessionId:
+          description: |-
+            This identifier is the same that was passed via the TextchatV2Request#sessionId it helps you identify one conversation.
+
+            Parloa will use this session Id to remember the conversation state between a user and a parloa bot.
+          type: string
+        transactionId:
+          description: Unique identifier for the interaction with the chat api. Should be reported together with bug reports.
+          type: string
+      required:
+        - apiVersion
+        - releaseId
+        - sessionId
+        - requesterId
+        - responseElements
+        - endConversation
+      type: object
+    TextchatV2ResponseItem:
+      anyOf:
+        - $ref: "#/components/schemas/TextchatV2TextResponseElement"
+        - $ref: "#/components/schemas/TextchatV2JSONPayloadResponseElement"
+        - $ref: "#/components/schemas/TextchatV2GenericCardResponseElement"
+    TextchatV2TextResponseElement:
+      additionalProperties: false
+      properties:
+        content:
+          type: string
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - text
+      required:
+        - type
+        - content
+      type: object
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - BearerAuth: []
