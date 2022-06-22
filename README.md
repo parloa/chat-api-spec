@@ -18,7 +18,7 @@ Because the intended audience of this specifiction are our partners, we don't cu
 
 ## License
 
-parloa/chat-api-spec is licensed under the [MIT license](LICENSE.md)
+parloa/chat-api-spec is licensed under the [MIT license](LICENSE)
 
 ## Contact
 
