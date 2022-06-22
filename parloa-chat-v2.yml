@@ -6,7 +6,7 @@ info:
 
     <h2 id="description-summary">Summary</h2>
 
-    Parloa's chat api enable integrators to interact with a parloa textchat bot in there chat-system or application.
+    Parloa's chat api enables integrators to interact with a parloa textchat bot in there chat-system or application.
 
     The api follows a simple request-response pattern, the api consits only of one endpoint that
     expects TextchatV2 events via TextchatV2Request and responds with a TextchatV2Response.
@@ -16,9 +16,9 @@ info:
     An interaction with with a textchat bot have to follow the following protocol:
 
       1. The first interaction have to initiate a conversation via an `TextchatV2LaunchEvent`,
-         the bot will then directly respond with an welcome message.
-      2. Until the bot don't respond with `endConversation=true` the conversation will be kept
-         open, the conversation can be also terminated from the client side by sending a `TextchatV2QuitEvent`.
+         the bot will then directly respond with a welcome message.
+      2. Until the bot doesn't respond with `endConversation=true` the conversation will be kept
+         open, the conversation can also be terminated from the client side by sending a `TextchatV2QuitEvent`.
       3. Over the lifetime of the conversation `TextchatV2MessageEvent` are used to notify responses from
          a user to a bot.
 
