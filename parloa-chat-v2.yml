@@ -212,7 +212,7 @@ components:
       type: object
     TextchatV2QuitEvent:
       additionalProperties: false
-      description: Notifies that a leaved the conversation
+      description: Notifies that a user leaved the conversation
       properties:
         type:
           type: string
