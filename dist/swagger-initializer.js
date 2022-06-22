@@ -3,7 +3,7 @@ window.onload = function () {
 
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
-    url: "https://parloa.github.io/chat-api-spec/parloa-chat-v1.yml",
+    url: "https://parloa.github.io/chat-api-spec/parloa-chat-v2.yml",
     dom_id: "#swagger-ui",
     deepLinking: true,
     queryConfigEnabled: false,
