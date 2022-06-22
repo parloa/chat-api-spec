@@ -13,7 +13,7 @@ info:
 
     <h2 id="description-lifecyle">Conversation Protocol</h2>
 
-    An interaction with with a textchat bot has to follow the protocol:
+    An interaction with a textchat bot has to follow the protocol:
 
       1. The first interaction has to initiate a conversation via `TextchatV2LaunchEvent`,
          the bot will then directly respond with a welcome message.
@@ -34,7 +34,7 @@ info:
     ```
 
   version: 0.0.1
-  title: Parloa Chat API
+  title: Parloa TextchatV2 API
   contact:
     email: dev@parloa.com
 
