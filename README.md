@@ -1,6 +1,6 @@
 # Parloa's TextchatV2 OpenAPI Specifiction
 
-This repository contains [https://www.openapis.org/](OpenAPI) specifiction for Parloa's TextchatV2 API.
+This repository contains [https://www.openapis.org/](OpenAPI) specifiction for parloa's TextchatV2 API.
 
 ## What is OpenAPI?
 

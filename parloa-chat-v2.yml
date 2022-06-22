@@ -2,29 +2,29 @@ openapi: 3.0.0
 
 info:
   description: |
-    API specification of the parloa chat api.
+    API specification of the parloa TextchatV2 API.
 
     <h2 id="description-summary">Summary</h2>
 
-    Parloa's chat api enables integrators to interact with a parloa textchat bot in there chat-system or application.
+    Parloa's TextchatV2 API enables integrators to interact with a parloa textchat bot in their chat system or application.
 
-    The api follows a simple request-response pattern, the api consits only of one endpoint that
+    The API follows a simple request-response pattern, the API consists of only one endpoint that
     expects TextchatV2 events via TextchatV2Request and responds with a TextchatV2Response.
 
     <h2 id="description-lifecyle">Conversation Protocol</h2>
 
-    An interaction with with a textchat bot have to follow the following protocol:
+    An interaction with with a textchat bot has to follow the protocol:
 
-      1. The first interaction have to initiate a conversation via an `TextchatV2LaunchEvent`,
+      1. The first interaction has to initiate a conversation via `TextchatV2LaunchEvent`,
          the bot will then directly respond with a welcome message.
       2. Until the bot doesn't respond with `endConversation=true` the conversation will be kept
          open, the conversation can also be terminated from the client side by sending a `TextchatV2QuitEvent`.
-      3. Over the lifetime of the conversation `TextchatV2MessageEvent` are used to notify responses from
+      3. Over the lifetime of the conversation `TextchatV2MessageEvent` is used to notify responses from
          a user to a bot.
 
     <h2 id="description-authentication">Authentication</h2>
 
-    To authenticate against textchat bot, the dialoghook webhook have to be invoked with a Bearer token
+    To authenticate against textchat bot, the dialoghook webhook has to be invoked with a Bearer token
     that contains the apiToken that was created during the textchat bot's release creation.
 
     [Bearer Authentication](https://swagger.io/docs/specification/authentication/bearer-authentication/):
