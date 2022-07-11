@@ -1,6 +1,6 @@
 # Parloa's TextchatV2 OpenAPI Specifiction
 
-This repository contains [https://www.openapis.org/](OpenAPI) specifiction for Parloa's TextchatV2 API.
+This repository contains the [OpenAPI](https://www.openapis.org/) specifiction for parloa's TextchatV2 API.
 
 ## What is OpenAPI?
 
@@ -18,7 +18,7 @@ Because the intended audience of this specifiction are our partners, we don't cu
 
 ## License
 
-parloa/chat-api-spec is licensed under the [MIT license](LICENSE.md)
+parloa/chat-api-spec is licensed under the [MIT license](LICENSE)
 
 ## Contact
 
