@@ -344,7 +344,11 @@ components:
             Parloa will use this session Id to remember the conversation state between a user and a parloa bot.
           type: string
         transactionId:
-          description: Unique identifier for the interaction with the chat api. Should be reported together with bug reports.
+          description: |
+            Unique identifier for the interaction with the chat api. Should be reported together with bug reports.
+
+            NOTE: The transactionId will be replaced by the X-Request-Id and X-Correlation-Id headers.
+
           type: string
           deprecated: true
 
