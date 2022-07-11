@@ -346,6 +346,8 @@ components:
         transactionId:
           description: Unique identifier for the interaction with the chat api. Should be reported together with bug reports.
           type: string
+          deprecated: true
+
       required:
         - apiVersion
         - releaseId
