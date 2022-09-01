@@ -10,7 +10,7 @@ From the [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification):
 
 ## Status
 
-The specification is considered **not stable** and not generally available.
+The specification is considered **stable** and generally available.
 
 ## Contributing
 
