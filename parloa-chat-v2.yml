@@ -112,6 +112,20 @@ paths:
                   sessionId: "<session-id>"
                   event:
                     type: "quit"
+              send-message-context:
+                summary: Send a message and context information to textchat bot.
+                value:
+                  apiVersion: "chat/v1"
+                  requesterId: "<user-id>"
+                  sessionId: "<session-id>"
+                  context:
+                    - key: name
+                      value: Max
+                    - key: age
+                      value: 20
+                  event:
+                    type: "message"
+                    text: "Hello textchat!"
 
             schema:
               $ref: "#/components/schemas/TextchatV2RequestBody"
@@ -238,6 +252,12 @@ components:
         sessionId:
           description: The sessionId should match to the conversationId of the chat interaction of the chat widget. Parloa will use this session Id to remember the conversation state between a user and a parloa bot.
           type: string
+        context:
+          description: Context information that can be passed over to a parloa-bot.
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/TextchatV2ContextItem"
+          type: array
       required:
         - apiVersion
         - sessionId
@@ -365,6 +385,26 @@ components:
         - $ref: "#/components/schemas/TextchatV2TextResponseElement"
         - $ref: "#/components/schemas/TextchatV2JSONPayloadResponseElement"
         - $ref: "#/components/schemas/TextchatV2GenericCardResponseElement"
+
+    TextchatV2ContextItem:
+      type: object
+      properties:
+        key:
+          description: |
+            The identifier of a context field that should be accessible in the bot via that name.
+          type: string
+        value:
+          description: The value of this context item that should be passed over to parloa bot
+          anyOf:
+            - type: string
+              maxLength: 1000
+            - type: number
+            - type: boolean
+      additionalProperties: false
+      required:
+        - key
+        - value
+
     TextchatV2TextResponseElement:
       additionalProperties: false
       properties:
