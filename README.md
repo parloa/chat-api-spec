@@ -1,5 +1,8 @@
 # Parloa's TextchatV2 OpenAPI Specifiction
 
+> [!NOTE]  
+> The repository is archived and the specification was moved to https://app.parloa.com/dialoghook/docs/textchatV2.
+
 This repository contains the [OpenAPI](https://www.openapis.org/) specifiction for parloa's TextchatV2 API.
 
 ## What is OpenAPI?
